@@ -11,7 +11,7 @@ class GameManager:
         self.num_agents = len(agents)
 
         for i in range(self.num_agents):
-            agents[i].__setattr__(i, team_sequence)
+            agents[i].set_agent_info(i, team_sequence)
         self.current_agent = 0
 
         self.window_size = (cols * CELL_SIZE, (rows + 1) * CELL_SIZE)

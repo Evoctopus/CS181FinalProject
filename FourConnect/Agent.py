@@ -6,10 +6,10 @@ from settings import *
 
 class Agent:
 
-    def __setattr__(self, id, team_sequence):
+    def set_agent_info(self, id, team_sequence):
         self.id = id
         self.team_sequence = team_sequence
-        self.team_member = [i for i in len(team_sequence) if team_sequence[i] == self.id]
+        self.team_member = [i for i in range(len(team_sequence)) if team_sequence[i] == self.id]
 
     def make_move(self, game : ConnectFour, events = None):
         pass
