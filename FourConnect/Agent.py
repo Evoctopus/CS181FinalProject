@@ -194,14 +194,14 @@ class QLearningAgent(Agent):
         self.q_table = defaultdict(lambda: defaultdict(float))
         self.training = True# is training
         
-    def get_state_key(self, game):
+    def get_state_key(self, game : ConnectFour):
         board = game.get_board_state()
         return tuple(tuple(row) for row in board)
     
-    def get_valid_actions(self, game):
+    def get_valid_actions(self, game : ConnectFour):
         return [col for col in range(game.cols) if game.is_valid_location(col)]
     
-    def choose_action(self, game):
+    def choose_action(self, game : ConnectFour):
         state_key = self.get_state_key(game)
         valid_actions = self.get_valid_actions(game)
         if not valid_actions:
@@ -216,7 +216,7 @@ class QLearningAgent(Agent):
             best_actions = [action for action, q in q_values.items() if q == max_q]
             return random.choice(best_actions)
     
-    def make_move(self, game, events=None):
+    def make_move(self, game : ConnectFour, events=None):
         return self.choose_action(game)
     
     def update_q_table(self, state, action, reward, next_state, game_over):

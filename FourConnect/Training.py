@@ -1,7 +1,7 @@
 from ConnectFour import ConnectFour
 from Agent import *
 
-def train_qlearning_agent(episodes=10000, opponent_agent_class=GreedyAgent, 
+def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent, 
                          save_path="qlearning_model.pkl", verbose=True):
     """
     - episodes: training times
