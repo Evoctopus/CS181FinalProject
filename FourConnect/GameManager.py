@@ -28,10 +28,12 @@ class GameManager:
         
         # meau button
         self.menu_buttons = [
-            {"text": "Human vs Human", "rect": pygame.Rect(250, 200, 200, 50), "agents": [HumanAgent(0, [0,1]), MiniMax(1, [0,1], 4, evaluate_func)]},
-            {"text": "Human vs Random", "rect": pygame.Rect(250, 270, 200, 50), "agents": [RandomAgent(0, [0,1]), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
-
-            {"text": "Exit", "rect": pygame.Rect(250, 410, 200, 50), "agents": None}
+            {"text": "Human VS Human", "rect": pygame.Rect(250, 160, 200, 50), "agents": [HumanAgent(0, [0,1]), HumanAgent(1, [0,1])]},
+            {"text": "Human VS Radom", "rect": pygame.Rect(250, 220, 200, 50), "agents": [HumanAgent(0, [0,1]), RandomAgent(1, [0,1])]},
+            {"text": "Human vs MiniMax", "rect": pygame.Rect(250, 280, 200, 50), "agents": [HumanAgent(0, [0,1]), MiniMax(1, [0,1], 4, evaluate_func)]},
+            {"text": "Human vs Greedy", "rect": pygame.Rect(250, 340, 200, 50), "agents": [HumanAgent(0, [0,1]), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
+            {"text": "Human vs Qlearning", "rect": pygame.Rect(250, 400, 200, 50), "agents": [HumanAgent(0, [0,1]), QLearningAgent(1, [0,1])]},
+            {"text": "Exit", "rect": pygame.Rect(250, 460, 200, 50), "agents": None}
         ]
         
         self.back_button = {"text": "Back", "rect": pygame.Rect(550, 10, 120, 40)}
