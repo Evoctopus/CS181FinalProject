@@ -25,12 +25,11 @@ class GameManager:
         self.state = GameState.MENU
         self.game = ConnectFour()
         self.current_player = 0
-        self.agents = [None, None] 
         
         # meau button
         self.menu_buttons = [
-            {"text": "Human vs Human", "rect": pygame.Rect(250, 200, 200, 50), "agents": [HumanAgent, HumanAgent]},
-            {"text": "Human vs Random", "rect": pygame.Rect(250, 270, 200, 50), "agents": [HumanAgent, RandomAgent]},
+            {"text": "Human vs Human", "rect": pygame.Rect(250, 200, 200, 50), "agents": [HumanAgent(0, [0,1]), MiniMax(1, [0,1], 4, evaluate_func)]},
+            {"text": "Human vs Random", "rect": pygame.Rect(250, 270, 200, 50), "agents": [RandomAgent(0, [0,1]), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
 
             {"text": "Exit", "rect": pygame.Rect(250, 410, 200, 50), "agents": None}
         ]
@@ -102,9 +101,9 @@ class GameManager:
             if self.game.is_tie():
                 result_text = "DRAW!"
             else:
-                winner = "Player1" if self.current_player == 0 else "Player2"
-                result_text = f"{winner} WIN!"
-            text = self.big_font.render(result_text, True, (255, 0, 0))
+                winner = self.agents[self.current_player].__str__()
+                result_text = f"Player{self.current_player} {winner} WIN!"
+            text = self.big_font.render(result_text, True, (255, 255, 255))
             text_rect = text.get_rect(center=(350, 550))
             self.screen.blit(text, text_rect)
 
@@ -117,8 +116,7 @@ class GameManager:
                             pygame.quit()
                             sys.exit()
                         else:
-                            self.agents[0] = button["agents"][0](0, [0, 1])
-                            self.agents[1] = button["agents"][1](1, [0, 1])
+                            self.agents = button["agents"]
                             self.game.reset_game()
                             self.current_player = 0
                             self.state = GameState.PLAYING
@@ -141,7 +139,7 @@ class GameManager:
             if col is not None and self.game.is_valid_location(col):
                 self.game.drop_piece(self.current_player, col)
                 if not self.game.is_game_over():
-                    self.current_player = 1 - self.current_player
+                    self.current_player = (self.current_player + 1) % len(self.agents)
 
     def run(self):
         running = True

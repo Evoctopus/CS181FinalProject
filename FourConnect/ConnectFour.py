@@ -1,3 +1,5 @@
+import copy
+
 class ConnectFour:
     def __init__(self, rows=6, cols=7):
         self.rows = rows
@@ -70,4 +72,19 @@ class ConnectFour:
 
     def reset_game(self):
         self.board = [[-1 for _ in range(self.cols)] for _ in range(self.rows)]
-        self.game_over = False    
+        self.game_over = False 
+    
+    def get_legal_action(self):
+        return [col for col in range(self.cols) if self.board[0][col] == -1]
+
+    def get_next_state(self, col, id):
+        tmp_game = copy.deepcopy(self)
+        row = tmp_game.drop_piece(id, col)
+        return tmp_game, row
+
+
+    def __str__(self):
+        board_str = ""
+        for row in self.board:
+            board_str += " | ".join(str(piece) if piece != -1 else "." for piece in row) + "\n"
+        return board_str   
