@@ -1,8 +1,8 @@
 from ConnectFour import ConnectFour
+from collections import defaultdict
 import random
-import copy
+import pickle
 import pygame
-from settings import *
 
 class Agent:
     def __init__(self, id, team_sequence):
@@ -11,6 +11,7 @@ class Agent:
         self.team_member = [i for i in range(len(team_sequence)) if team_sequence[i] == team_sequence[self.id]]
         self.agentCnt = len(self.team_sequence)
 
+
     def make_move(self, game: ConnectFour, events=None):
         pass
 
@@ -18,7 +19,7 @@ class HumanAgent(Agent):
     def make_move(self, game, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                col = event.pos[0] // CELL_SIZE
+                col = event.pos[0] // 100
                 return col
     
     def __str__ (self):
@@ -78,11 +79,11 @@ def naive_greedy_reward(game : ConnectFour, row, col, team_member):
     return score
 
 class GreedyAgent(Agent):
-    def __init__(self, id, team_sequence, reward_func = None):
+    def __init__(self, id, team_sequence, reward_func = naive_greedy_reward):
         super().__init__(id, team_sequence)
         self.reward_func = reward_func
 
-    def make_move(self, game : ConnectFour, events):
+    def make_move(self, game : ConnectFour, events = None):
         valid_moves = game.get_legal_action()
         max_score = float('-inf')
         max_move = 0
@@ -138,7 +139,7 @@ class MiniMax(Agent):
         self.eval_func = evaluate_func
 
 
-    def make_move(self, game : ConnectFour, events):
+    def make_move(self, game : ConnectFour, events=None):
         alpha, beta = float('-inf'), float('inf')
         for action in game.get_legal_action():
             nextSate, row = game.get_next_state(action, self.id)
@@ -182,3 +183,83 @@ class MiniMax(Agent):
 
     def __str__(self):
         return "MiniMax Agent"
+    
+
+class QLearningAgent(Agent):
+    def __init__(self, id, team_sequence, epsilon=0.1, alpha=0.1, gamma=0.9):
+        super().__init__(id, team_sequence)
+        self.epsilon = epsilon
+        self.alpha = alpha
+        self.gamma = gamma
+        self.q_table = defaultdict(lambda: defaultdict(float))
+        self.training = True# is training
+        
+    def get_state_key(self, game):
+        board = game.get_board_state()
+        return tuple(tuple(row) for row in board)
+    
+    def get_valid_actions(self, game):
+        return [col for col in range(game.cols) if game.is_valid_location(col)]
+    
+    def choose_action(self, game):
+        state_key = self.get_state_key(game)
+        valid_actions = self.get_valid_actions(game)
+        if not valid_actions:
+            return None
+            
+        if self.training and random.random() < self.epsilon:
+            return random.choice(valid_actions)
+        else:
+            q_values = {action: self.q_table[state_key][action] 
+                       for action in valid_actions}
+            max_q = max(q_values.values())
+            best_actions = [action for action, q in q_values.items() if q == max_q]
+            return random.choice(best_actions)
+    
+    def make_move(self, game, events=None):
+        return self.choose_action(game)
+    
+    def update_q_table(self, state, action, reward, next_state, game_over):
+        state_key = self.get_state_key_from_state(state)
+        next_state_key = self.get_state_key_from_state(next_state)
+        
+        if game_over:
+            max_next_q = 0
+        else:
+            next_valid_actions = self.get_valid_actions_from_state(next_state)
+            if next_valid_actions:
+                max_next_q = max(self.q_table[next_state_key][a] for a in next_valid_actions)
+            else:
+                max_next_q = 0
+        # Q-learning
+        current_q = self.q_table[state_key][action]
+        new_q = current_q + self.alpha * (reward + self.gamma * max_next_q - current_q)
+        self.q_table[state_key][action] = new_q
+    
+    def get_state_key_from_state(self, state):
+        return tuple(tuple(row) for row in state)
+    
+    def get_valid_actions_from_state(self, state):
+        cols = len(state[0])
+        return [col for col in range(cols) if state[0][col] == -1]
+    
+    def save_q_table(self, filename):
+        with open(filename, 'wb') as f:
+            pickle.dump(dict(self.q_table), f)
+    
+    def load_q_table(self, filename):
+        try:
+            with open(filename, 'rb') as f:
+                loaded_table = pickle.load(f)
+                self.q_table = defaultdict(lambda: defaultdict(float))
+                for state_key, actions in loaded_table.items():
+                    for action, q_value in actions.items():
+                        self.q_table[state_key][action] = q_value
+        except FileNotFoundError:
+            print(f"{filename} didn't found")
+    
+    def set_training_mode(self, training):
+        self.training = training
+    
+    def __str__(self):
+        return "Q-Learning Agent"
