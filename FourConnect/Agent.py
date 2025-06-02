@@ -163,6 +163,15 @@ class MiniMax(Agent):
     def min_value(self, gameState : ConnectFour, depth, agentIndex, alpha, beta):
         v = float('inf')
         for action in gameState.get_legal_action():
+            row = gameState.get_top_row(action)
+            if gameState.check_potential_win(row, action, piece=agentIndex):
+                return -10
+            nextAgent = (agentIndex + 1) % self.agentCnt
+            if gameState.check_potential_win(row-1, action, piece=nextAgent):
+                if nextAgent in self.team_member:
+                    continue
+                else:
+                    return -10
             nextSate, row = gameState.get_next_state(action, agentIndex)
             v = min(v, self.next_value(nextSate, depth, agentIndex, alpha, beta))
             if v < alpha:
@@ -173,6 +182,15 @@ class MiniMax(Agent):
     def max_value(self, gameState : ConnectFour, depth, agentIndex, alpha, beta):
         v = float('-inf')
         for action in gameState.get_legal_action():
+            row = gameState.get_top_row(action)
+            if gameState.check_potential_win(row, action, piece=agentIndex):
+                return 10
+            nextAgent = (agentIndex + 1) % self.agentCnt
+            if gameState.check_potential_win(row-1, action, piece=nextAgent):
+                if nextAgent in self.team_member:
+                    return 10
+                else:
+                    continue
             nextSate, row = gameState.get_next_state(action, agentIndex)
             v = max(v, self.next_value(nextSate, depth, agentIndex, alpha, beta))
             if v > beta:
@@ -186,22 +204,25 @@ class MiniMax(Agent):
     
 
 class QLearningAgent(Agent):
-    def __init__(self, id, team_sequence, epsilon=0.1, alpha=0.1, gamma=0.9):
+    def __init__(self, id, team_sequence, epsilon=0.1, alpha=0.1, gamma=0.9, training=True):
         super().__init__(id, team_sequence)
         self.epsilon = epsilon
         self.alpha = alpha
         self.gamma = gamma
-        self.q_table = defaultdict(lambda: defaultdict(float))
-        self.training = True# is training
+        if not training:
+            self.load_q_table("qlearning_model.pkl")
+        else:
+            self.q_table = defaultdict(lambda: defaultdict(float))
+        self.training = training
         
-    def get_state_key(self, game):
+    def get_state_key(self, game : ConnectFour):
         board = game.get_board_state()
         return tuple(tuple(row) for row in board)
     
-    def get_valid_actions(self, game):
+    def get_valid_actions(self, game : ConnectFour):
         return [col for col in range(game.cols) if game.is_valid_location(col)]
     
-    def choose_action(self, game):
+    def choose_action(self, game : ConnectFour):
         state_key = self.get_state_key(game)
         valid_actions = self.get_valid_actions(game)
         if not valid_actions:
@@ -216,7 +237,7 @@ class QLearningAgent(Agent):
             best_actions = [action for action, q in q_values.items() if q == max_q]
             return random.choice(best_actions)
     
-    def make_move(self, game, events=None):
+    def make_move(self, game : ConnectFour, events=None):
         return self.choose_action(game)
     
     def update_q_table(self, state, action, reward, next_state, game_over):
@@ -263,3 +284,6 @@ class QLearningAgent(Agent):
     
     def __str__(self):
         return "Q-Learning Agent"
+
+
+

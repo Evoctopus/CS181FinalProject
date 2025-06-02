@@ -1,7 +1,7 @@
 from ConnectFour import ConnectFour
 from Agent import *
 
-def train_qlearning_agent(episodes=10000, opponent_agent_class=GreedyAgent, 
+def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent, 
                          save_path="qlearning_model.pkl", verbose=True):
     """
     - episodes: training times
@@ -10,15 +10,15 @@ def train_qlearning_agent(episodes=10000, opponent_agent_class=GreedyAgent,
     - verbose: is print or not
     """
     team_sequence = [0, 1]  # 0-self agent，1-another player agent
-    q_agent = QLearningAgent(0, team_sequence)
-    opponent = opponent_agent_class(1, team_sequence)   
+    q_agent = QLearningAgent(1, team_sequence)
+    opponent = opponent_agent_class(0, team_sequence)   
     wins = 0
     losses = 0
     ties = 0
     
     for episode in range(episodes):
         game = ConnectFour()
-        agents = [q_agent, opponent]
+        agents = [opponent, q_agent]  # opponent first, then Q-learning agent
         current_player = 0
         game_history = []
         while not game.is_game_over():
@@ -86,4 +86,4 @@ def train_qlearning_agent(episodes=10000, opponent_agent_class=GreedyAgent,
     return q_agent
 
 if __name__ == "__main__":
-    trained_agent = train_qlearning_agent(episodes=5000, verbose=True)
+    trained_agent = train_qlearning_agent(episodes=10000, verbose=True)

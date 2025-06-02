@@ -27,8 +27,9 @@ class ConnectFour:
     def is_valid_location(self, col):
         return 0 <= col < self.cols and self.board[0][col] == -1
 
-    def check_winning_move(self, row, col):
-        piece = self.board[row][col]
+    def check_winning_move(self, row, col, piece=None):
+        if piece == None:
+            piece = self.board[row][col]
         
         # Check horizontal
         for c in range(self.cols-3):
@@ -57,6 +58,12 @@ class ConnectFour:
                     return True
 
         return False
+
+    def check_potential_win(self, row, col, piece):
+        self.board[row][col] = piece
+        success = self.check_winning_move(row, col, piece)
+        self.board[row][col] = -1
+        return success
 
     def is_tie(self):
         return not self.game_over and all(self.board[0][c] != -1 for c in range(self.cols))
