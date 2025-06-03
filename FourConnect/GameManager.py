@@ -29,10 +29,10 @@ class GameManager:
         
         # meau button
         self.menu_buttons = [
-            {"text": "Human VS Human", "rect": pygame.Rect(250, 160, 200, 50), "agents": [HumanAgent(0, [0,1]), MCT_Agent(1, [0,1], 1000)]},
-            {"text": "Human VS Radom", "rect": pygame.Rect(250, 220, 200, 50), "agents": [MiniMax(1, [0,1], 4, evaluate_func), MCT_Agent(1, [0,1], 1000)]},
-            {"text": "Human vs MiniMax", "rect": pygame.Rect(250, 280, 200, 50), "agents": [HumanAgent(0, [0, 1]), MiniMax(1, [0,1], 4, evaluate_func)]},
-            {"text": "Human vs Greedy", "rect": pygame.Rect(250, 340, 200, 50), "agents": [MiniMax(1, [0,1], 4, evaluate_func), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
+            {"text": "Human VS Human", "rect": pygame.Rect(250, 160, 200, 50), "agents": [HumanAgent(0, [0,1,1]), GreedyAgent(1, [0, 1, 1], naive_greedy_reward),  GreedyAgent(2, [0, 1, 1], naive_greedy_reward)]},
+            {"text": "Human VS Radom", "rect": pygame.Rect(250, 220, 200, 50), "agents": [HumanAgent(0, [0,1,0,1]), HumanAgent(1, [0,1,0,1]), MCT_Agent(2, [0,1,0,1], 1000), MCT_Agent(3, [0,1,0,1], 1000)]},
+            {"text": "MCT vs HUAMAN", "rect": pygame.Rect(250, 280, 200, 50), "agents": [MCT_Agent(0, [0,1], 1000), HumanAgent(1, [0, 1])]},
+            {"text": "Human vs Greedy", "rect": pygame.Rect(250, 340, 200, 50), "agents": [HumanAgent(0, [0, 1]), MCT_Agent(1, [0,1], 1000)]},
            # {"text": "Human vs Qlearning", "rect": pygame.Rect(250, 400, 200, 50), "agents": [HumanAgent(0, [0, 1]), QLearningAgent(1, [0,1], training=False)]},
             {"text": "Exit", "rect": pygame.Rect(250, 460, 200, 50), "agents": None}
         ]

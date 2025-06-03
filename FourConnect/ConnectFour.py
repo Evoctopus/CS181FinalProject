@@ -60,8 +60,11 @@ class ConnectFour:
         return False
 
     def check_potential_win(self, row, col, piece):
+        if row < 0:
+            return False
         self.board[row][col] = piece
         success = self.check_winning_move(row, col, piece)
+        self.game_over = False
         self.board[row][col] = -1
         return success
 
