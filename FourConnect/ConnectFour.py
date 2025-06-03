@@ -83,6 +83,7 @@ class ConnectFour:
     def reset_game(self):
         self.board = [[-1 for _ in range(self.cols)] for _ in range(self.rows)]
         self.game_over = False 
+        self.winner = None 
     
     def get_legal_action(self):
         return [col for col in range(self.cols) if self.board[0][col] == -1]

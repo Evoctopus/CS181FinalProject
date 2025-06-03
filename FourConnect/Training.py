@@ -1,7 +1,7 @@
 from ConnectFour import ConnectFour
 from Agent import *
 
-def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent, 
+def train_qlearning_agent(episodes=10000, opponent_agent_class=RandomAgent, 
                          save_path="qlearning_model.pkl", verbose=True):
     """
     - episodes: training times
@@ -9,16 +9,17 @@ def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent,
     - save_path: path to save
     - verbose: is print or not
     """
-    team_sequence = [0, 1]  # 0-self agent，1-another player agent
-    q_agent = QLearningAgent(1, team_sequence)
+    team_sequence = [0, 1]  #0-another player agent， 1-self agent
     opponent = opponent_agent_class(0, team_sequence)   
+    q_agent = QLearningAgent(id=1, team_sequence=team_sequence, model_path="qlearning_model.pkl")
+    q_agent.set_training_mode(True)
     wins = 0
     losses = 0
     ties = 0
     
     for episode in range(episodes):
         game = ConnectFour()
-        agents = [opponent, q_agent]  # opponent first, then Q-learning agent
+        agents = [opponent,q_agent]
         current_player = 0
         game_history = []
         while not game.is_game_over():
@@ -26,7 +27,7 @@ def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent,
             action = agents[current_player].make_move(game)
             if action is not None:
                 row = game.drop_piece(current_player, action)
-                if current_player == 0:  # only record player 1:Q-learning agent moves
+                if current_player == 1:  # only record player 1:Q-learning agent moves
                     game_history.append((current_state, action))
                 current_player = 1 - current_player
             else:
@@ -43,10 +44,10 @@ def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent,
                 if winner is not None:
                     break
             
-            if winner == 0:  # self
+            if winner == 1:  # self
                 reward = 1
                 wins += 1
-            elif winner == 1:  
+            elif winner == 0:  
                 reward = -1
                 losses += 1
             else: 
@@ -82,8 +83,9 @@ def train_qlearning_agent(episodes=5000, opponent_agent_class=GreedyAgent,
     
     q_agent.save_q_table(save_path)
     q_agent.set_training_mode(False)
-
+    final_win_rate = wins / episodes * 100
+    #print(f"final_win_rate: {final_win_rate:.2f}%")
     return q_agent
 
 if __name__ == "__main__":
-    trained_agent = train_qlearning_agent(episodes=10000, verbose=True)
+    trained_agent = train_qlearning_agent(episodes=100000, verbose=True)

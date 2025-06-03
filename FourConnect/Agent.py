@@ -204,16 +204,17 @@ class MiniMax(Agent):
     
 
 class QLearningAgent(Agent):
-    def __init__(self, id, team_sequence, epsilon=0.1, alpha=0.1, gamma=0.9, training=True):
+    def __init__(self, id, team_sequence, epsilon=0.1, alpha=0.1, gamma=0.95, model_path=None):
         super().__init__(id, team_sequence)
         self.epsilon = epsilon
         self.alpha = alpha
         self.gamma = gamma
-        if not training:
-            self.load_q_table("qlearning_model.pkl")
-        else:
-            self.q_table = defaultdict(lambda: defaultdict(float))
-        self.training = training
+        self.q_table = defaultdict(lambda: defaultdict(float))
+        self.training = False# is training
+
+        if model_path:
+            self.load_q_table(model_path)
+            self.set_training_mode(False)
         
     def get_state_key(self, game : ConnectFour):
         board = game.get_board_state()
