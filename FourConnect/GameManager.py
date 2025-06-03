@@ -17,7 +17,7 @@ class GameManager:
         self.width = 7* CELL_SIZE
         self.height = 6* CELL_SIZE
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("ConnectFour")
+        pygame.display.set_caption("Connect  Four")
         
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 36)
@@ -29,17 +29,17 @@ class GameManager:
         
         # meau button
         self.menu_buttons = [
-            {"text": "Human VS Human", "rect": pygame.Rect(20, 160, 190, 50), "agents": [HumanAgent(0, [0,1]), HumanAgent(1, [0,1])]},
-            {"text": "Human VS Radom", "rect": pygame.Rect(20, 220, 190, 50), "agents": [HumanAgent(0, [0,1]), RandomAgent(1, [0,1])]},
-            {"text": "Human vs MiniMax", "rect": pygame.Rect(20, 280, 190, 50), "agents": [HumanAgent(0, [0,1]), MiniMax(1, [0,1], 4, evaluate_func)]},
-            {"text": "Human vs Greedy", "rect": pygame.Rect(20, 340, 190, 50), "agents": [HumanAgent(0, [0,1]), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
-            {"text": "Human vs Qlearning", "rect": pygame.Rect(20, 400, 190, 50), "agents": [HumanAgent(0, [0,1]), QLearningAgent(id=1, team_sequence=[0,1],model_path="qlearning_model.pkl")]},
-            {"text": "Human VS Greedy VS Greedy", "rect": pygame.Rect(210, 160, 380, 50), "agents": [HumanAgent(0, [0,1,1]), GreedyAgent(1, [0, 1, 1], naive_greedy_reward),  GreedyAgent(2, [0, 1, 1], naive_greedy_reward)]},
-            {"text": "Human VS Human VS MCT VS MCT", "rect": pygame.Rect(210, 220, 380, 50), "agents": [HumanAgent(0, [0,1,0,1]), HumanAgent(1, [0,1,0,1]), MCT_Agent(2, [0,1,0,1], 1000), MCT_Agent(3, [0,1,0,1], 1000)]},
-            {"text": "MCT vs HUAMAN", "rect": pygame.Rect(210, 280, 380, 50), "agents": [MCT_Agent(0, [0,1], 1000), HumanAgent(1, [0, 1])]},
-            {"text": "Human vs MCT", "rect": pygame.Rect(210, 340, 380, 50), "agents": [HumanAgent(0, [0, 1]), MCT_Agent(1, [0,1], 1000)]},
+            {"text": "Human VS Human", "rect": pygame.Rect(20, 160, 310, 50), "agents": [HumanAgent(0, [0,1]), HumanAgent(1, [0,1])]},
+            {"text": "Human VS Radom", "rect": pygame.Rect(20, 220, 310, 50), "agents": [HumanAgent(0, [0,1]), RandomAgent(1, [0,1])]},
+            {"text": "Human vs MiniMax", "rect": pygame.Rect(20, 280, 310, 50), "agents": [HumanAgent(0, [0,1]), MiniMax(1, [0,1], 4, evaluate_func)]},
+            {"text": "Human vs Greedy", "rect": pygame.Rect(20, 340, 310, 50), "agents": [HumanAgent(0, [0,1]), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
+            {"text": "Human vs Qlearning", "rect": pygame.Rect(20, 400, 310, 50), "agents": [HumanAgent(0, [0,1]), QLearningAgent(id=1, team_sequence=[0,1],model_path="qlearning_model.pkl")]},
+            {"text": "Human VS 2 Greedy", "rect": pygame.Rect(360, 160, 310, 50), "agents": [HumanAgent(0, [0,1,1]), GreedyAgent(1, [0, 1, 1], naive_greedy_reward),  GreedyAgent(2, [0, 1, 1], naive_greedy_reward)]},
+            {"text": "2 Human VS 2 MCT", "rect": pygame.Rect(360, 220, 310, 50), "agents": [HumanAgent(0, [0,1,0,1]), HumanAgent(1, [0,1,0,1]), MCT_Agent(2, [0,1,0,1], 1000), MCT_Agent(3, [0,1,0,1], 1000)]},
+            {"text": "MCT vs HUAMAN", "rect": pygame.Rect(360, 280, 310, 50), "agents": [MCT_Agent(0, [0,1], 1000), HumanAgent(1, [0, 1])]},
+            {"text": "Human vs MCT", "rect": pygame.Rect(360, 340, 310, 50), "agents": [HumanAgent(0, [0, 1]), MCT_Agent(1, [0,1], 1000)]},
             #{"text": "Human vs Qlearning", "rect": pygame.Rect(200, 400, 300, 50), "agents": [HumanAgent(0, [0, 1]), QLearningAgent(1, [0,1], training=False)]},
-            {"text": "Exit", "rect": pygame.Rect(210, 400, 380, 50), "agents": None}
+            {"text": "Exit", "rect": pygame.Rect(360, 400, 310, 50), "agents": None}
         ]
         
         self.back_button = {"text": "Back", "rect": pygame.Rect(550, 10, 120, 40)}
@@ -111,7 +111,7 @@ class GameManager:
             else:
                 winner = self.agents[self.current_player].__str__()
                 result_text = f"Player{self.current_player} {winner} WIN!"
-            text = self.big_font.render(result_text, True, COLORS[2])
+            text = self.big_font.render(result_text, True, COLORS[4])
             text_rect = text.get_rect(center=(350, 550))
             self.screen.blit(text, text_rect)
 
