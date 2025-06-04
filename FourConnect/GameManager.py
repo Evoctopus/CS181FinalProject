@@ -82,9 +82,11 @@ class GameManager:
                 # draw chess
                 piece = self.game.get_chess(row, col)
                 if piece != -1:
+                    if piece == 3:
+                        piece += 4
                     pygame.draw.circle(self.screen, COLORS[piece],
-                                     (col * CELL_SIZE + CELL_SIZE // 2,
-                                      row * CELL_SIZE + CELL_SIZE // 2), RADIUS)
+                            (col * CELL_SIZE + CELL_SIZE // 2,
+                            row * CELL_SIZE + CELL_SIZE // 2), RADIUS)
         
         mouse_pos = pygame.mouse.get_pos()
         
