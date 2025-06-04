@@ -285,6 +285,3 @@ class QLearningAgent(Agent):
     
     def __str__(self):
         return "Q-Learning Agent"
-
-
-

@@ -33,7 +33,7 @@ class GameManager:
             {"text": "Human VS Radom", "rect": pygame.Rect(20, 220, 310, 50), "agents": [HumanAgent(0, [0,1]), RandomAgent(1, [0,1])]},
             {"text": "Human vs MiniMax", "rect": pygame.Rect(20, 280, 310, 50), "agents": [HumanAgent(0, [0,1]), MiniMax(1, [0,1], 4, evaluate_func)]},
             {"text": "Human vs Greedy", "rect": pygame.Rect(20, 340, 310, 50), "agents": [HumanAgent(0, [0,1]), GreedyAgent(1, [0, 1], naive_greedy_reward)]},
-            {"text": "Human vs Qlearning", "rect": pygame.Rect(20, 400, 310, 50), "agents": [HumanAgent(0, [0,1]), QLearningAgent(id=1, team_sequence=[0,1],model_path="qlearning_model.pkl")]},
+            {"text": "Human vs Qlearning", "rect": pygame.Rect(20, 400, 310, 50), "agents": [HumanAgent(0, [0,1]), QLearningAgent(id=1, team_sequence=[0,1],model_path="qlearning_radom.pkl")]},
             {"text": "Human VS 2 Greedy", "rect": pygame.Rect(360, 160, 310, 50), "agents": [HumanAgent(0, [0,1,1]), GreedyAgent(1, [0, 1, 1], naive_greedy_reward),  GreedyAgent(2, [0, 1, 1], naive_greedy_reward)]},
             {"text": "2 Human VS 2 MCT", "rect": pygame.Rect(360, 220, 310, 50), "agents": [HumanAgent(0, [0,1,0,1]), HumanAgent(1, [0,1,0,1]), MCT_Agent(2, [0,1,0,1], 1000), MCT_Agent(3, [0,1,0,1], 1000)]},
             {"text": "MCT vs HUAMAN", "rect": pygame.Rect(360, 280, 310, 50), "agents": [MCT_Agent(0, [0,1], 1000), HumanAgent(1, [0, 1])]},

@@ -1,24 +1,26 @@
-from ConnectFour import ConnectFour
+from ConnectFour import *
 from Agent import *
+from MCT import *
 
-def train_qlearning_agent(episodes=10000, opponent_agent_class=RandomAgent, 
-                         save_path="qlearning_model.pkl", verbose=True):
+def train_qlearning_agent(episodes=1000, opponent_agent_class=GreedyAgent, 
+                         save_path="qlearning_greedy.pkl", verbose=True):
     """
     - episodes: training times
     - opponent_agent_class: training agent
+
     - save_path: path to save
     - verbose: is print or not
     """
     team_sequence = [0, 1]  #0-another player agent， 1-self agent
-    opponent = opponent_agent_class(0, team_sequence)   
-    q_agent = QLearningAgent(id=1, team_sequence=team_sequence, model_path="qlearning_model.pkl")
+    opponent = opponent_agent_class(0, [0, 1], naive_greedy_reward)
+    q_agent = QLearningAgent(id=1, team_sequence=team_sequence, model_path="qlearning_greedy.pkl")
     q_agent.set_training_mode(True)
     wins = 0
     losses = 0
     ties = 0
     
     for episode in range(episodes):
-        game = ConnectFour()
+        game = ConnectFour.ConnectFour()
         agents = [opponent,q_agent]
         current_player = 0
         game_history = []
@@ -70,17 +72,17 @@ def train_qlearning_agent(episodes=10000, opponent_agent_class=RandomAgent,
                 q_agent.update_q_table(state, action, 0, next_state, False)
             
             reward *= q_agent.gamma
-        
+
         # change epsilon
         if episode > 0 and episode % 1000 == 0:
             q_agent.epsilon = max(0.01, q_agent.epsilon * 0.95)
-            
+
             if verbose:
                 win_rate = wins / (episode + 1) * 100
                 print(f"Episode {episode}: Win Rate: {win_rate:.2f}%, "
                       f"Wins: {wins}, Losses: {losses}, Ties: {ties}, "
                       f"Epsilon: {q_agent.epsilon:.3f}")
-    
+
     q_agent.save_q_table(save_path)
     q_agent.set_training_mode(False)
     final_win_rate = wins / episodes * 100
