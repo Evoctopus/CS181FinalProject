@@ -132,21 +132,29 @@ def evaluate_func(game: ConnectFour, team_member, agentIndex):
     return score
 
 
+
 class MiniMax(Agent):
-    def __init__(self, id, team_sequence, depth, evaluate_func):
+    def __init__(self, id, team_sequence, depth, evaluate_func=evaluate_func):
         super().__init__(id, team_sequence)
         self.depth = depth
         self.eval_func = evaluate_func
 
-
     def make_move(self, game : ConnectFour, events=None):
         alpha, beta = float('-inf'), float('inf')
+        act = random.choice(game.get_legal_action())
         for action in game.get_legal_action():
+            row = game.get_top_row(action)
+            next_agent = (self.id + 1) % self.agentCnt
+            if game.check_potential_win(row, action, self.id) or game.check_potential_win(row, action, next_agent):
+                return action
+            if game.check_potential_win(row-1, action, next_agent):
+                continue
             nextSate, row = game.get_next_state(action, self.id)
             v = self.next_value(nextSate, 0, self.id, alpha, beta)
             if v > alpha:
                 alpha = v
                 act = action
+        
         return act
     
     def next_value(self, gameState : ConnectFour, depth, agentIndex, alpha, beta):
@@ -162,16 +170,27 @@ class MiniMax(Agent):
     
     def min_value(self, gameState : ConnectFour, depth, agentIndex, alpha, beta):
         v = float('inf')
+        cols = gameState.get_legal_action()
         for action in gameState.get_legal_action():
             row = gameState.get_top_row(action)
             if gameState.check_potential_win(row, action, piece=agentIndex):
-                return -10
+                cols = [action]
+                break
             nextAgent = (agentIndex + 1) % self.agentCnt
+            if gameState.check_potential_win(row, action, piece=nextAgent):
+                if nextAgent in self.team_member:
+                    cols = [action]
+                    break
+                else:
+                    cols.remove(action)
             if gameState.check_potential_win(row-1, action, piece=nextAgent):
                 if nextAgent in self.team_member:
-                    continue
+                    cols.remove(action)
                 else:
-                    return -10
+                    cols = [action]
+                    break
+
+        for action in cols:
             nextSate, row = gameState.get_next_state(action, agentIndex)
             v = min(v, self.next_value(nextSate, depth, agentIndex, alpha, beta))
             if v < alpha:
@@ -181,23 +200,34 @@ class MiniMax(Agent):
     
     def max_value(self, gameState : ConnectFour, depth, agentIndex, alpha, beta):
         v = float('-inf')
+
+        cols = gameState.get_legal_action()
         for action in gameState.get_legal_action():
             row = gameState.get_top_row(action)
             if gameState.check_potential_win(row, action, piece=agentIndex):
-                return 10
+                cols = [action]
+                break
             nextAgent = (agentIndex + 1) % self.agentCnt
-            if gameState.check_potential_win(row-1, action, piece=nextAgent):
-                if nextAgent in self.team_member:
-                    return 10
+            if gameState.check_potential_win(row, action, piece=nextAgent):
+                if nextAgent not in self.team_member:
+                    cols = [action]
+                    break
                 else:
-                    continue
+                    cols.remove(action)
+            if gameState.check_potential_win(row-1, action, piece=nextAgent):
+                if nextAgent not in self.team_member:
+                    cols.remove(action)
+                else:
+                    cols = [action]
+                    break
+
+        for action in cols:
             nextSate, row = gameState.get_next_state(action, agentIndex)
             v = max(v, self.next_value(nextSate, depth, agentIndex, alpha, beta))
             if v > beta:
                 return v
             alpha = max(alpha, v)
         return v
-
 
     def __str__(self):
         return "MiniMax Agent"

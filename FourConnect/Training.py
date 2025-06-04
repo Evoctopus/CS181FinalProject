@@ -90,4 +90,4 @@ def train_qlearning_agent(episodes=1000, opponent_agent_class=GreedyAgent,
     return q_agent
 
 if __name__ == "__main__":
-    trained_agent = train_qlearning_agent(episodes=100000, verbose=True)
+    trained_agent = train_qlearning_agent(episodes=10000, verbose=True)
