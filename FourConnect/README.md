@@ -1,4 +1,5 @@
 # FourConnect
+
 Create a simple game of Connect Four with python and pygame.
 
 ConnectFour.py contains the basical logic of the game, and GameManager.py is generate the game from ConnectFour.py logic and put the menu to select the different agent of the game.
@@ -25,6 +26,8 @@ self.menu_buttons= [
 
 In Agent.py we trying to make different agent of the players,such as Human, Radom, Greedy, MiniMax, Greedy, and  Qlearning.
 
+What's more in MCT.py we use Monte-Carlo tree search to find the better solution.
+
 For the part of training Qlearning is in the Training.py. This part independents of the ConnectFour gaming.By changing
 
-opponent_agent_class=GreedyAgent, and opponent=opponent_agent_class(1, team_sequence),we can use different agent in Agent.py to train the ai, and update the q_table for the result of training.
+opponent_agent_class ,we get 4 different q_table which trained by different agent(radom,greedy,MCT,MiniMax).
